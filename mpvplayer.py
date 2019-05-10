@@ -109,18 +109,18 @@ class CommandManager:
             print('command not defined')
 
     def play_cmd(self, args: list):
-        if len(args) == 1:
-            self.player.play(int(args[0]))
-        elif len(args) == 0:
+        if args is None:
             self.player.play()
+        elif len(args) == 1:
+            self.player.play(int(args[0]))
         else:
             print('Too many args: usage: play [nr]')
 
     def skip_cmd(self, args: list):
-        if len(args) == 1:
-            self.player.skip(int(args[0]))
-        elif len(args) == 0:
+        if args is None:
             self.player.play()
+        elif len(args) == 1:
+            self.player.skip(int(args[0]))
         else:
             print('Too many args: usage: skip [nr]')
 
