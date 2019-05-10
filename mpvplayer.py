@@ -18,10 +18,12 @@ class Player:
         if self.current_vid is not None and new_value is not None and self.current_vid.length <= new_value + 1: # 1 is for security, for some video's this is required
             self.play()
 
-    def add_video(self, video):
+    def add_video(self, video: dict):
         self.playlist.append(video)
 
-    def play(self):
+    def play(self, index=None):
+        if index is not None:
+            self.index = index
         if self.index < len(self.playlist):
             self.current_vid = pafy.new(self.playlist[self.index]['url'])
             self.player.play(self.playlist[self.index]['url'])
@@ -30,15 +32,17 @@ class Player:
             print('playlist at end - add songs')
 
     def disconnect(self):
-        self.player.terminate()
+        self.player.terminate()read xml python
+
+    def goto(self, index: int):
 
     def __str__(self):
         string = ""
         for i, video in enumerate(self.playlist):
             if self.index - 1 == i:
-                string += "\n--> " + video['title']
+                string += f"\n--> {i}: {video['title']}"
             else:
-                string += "\n" + video['title']
+                string += f"\n{i}: {video['title']}"
         return string
 
 
@@ -74,29 +78,74 @@ class Searcher:
         return self.results
 
 
+class CommandManager:
+
+    def __init__(self, player: Player, searcher: Searcher):
+        self.map = {
+                "play": self.play_cmd,
+                "skip": None,
+                "list": self.list_cmd,
+                "find": self.find_cmd,
+                "addall": None,
+                "add": self.add_cmd}
+        self.player = player
+        self.searcher = searcher
+
+    def execute_command(self, basename: str, args: list):
+        if self.map[basename] is not None:
+            self.map[basename](args)
+        else:
+            print('command not defined')
+
+    def play_cmd(self, args: list):
+        pass
+
+    def add_cmd(self, args: list):
+        pass
+
+    def find_cmd(self, args: list):
+        pass
+
+    def list_cmd(self, args: list):
+
 player = Player()
 searcher = Searcher()
+commandManager = CommandManager(player, searcher)
 
 # main loop
 command = input("> ")
 while command != "quit":
-    if command.startswith("find "):
-        command = command.split(" ")[1:]
-        searcher.search(command)
-        print(searcher)
-    elif command.startswith("add "):
-        video = searcher.get_video(int(command.split(' ')[1]))
-        player.add_video(video)
-    elif command == "play" or command == "skip":
-        player.play()
-    elif command == "list":
-        print(player)
-    elif command == "addall":
-        for video in searcher.get_all_videos():
-            player.add_video(video)
-        print('all video\'s added to playlist')
-    else:
-        print('Unkown command')
+    command = command.split(' ')
+    basename = command[0]
+    if len(command) >= 2:
+        args = command[1:]
+    else
+        args = None
+    commandManager.execute_command(basename, args)
     command = input("> ")
+
+#    if command.startswith("find "):
+#        command = command.split(" ")[1:]
+#        searcher.search(command)
+#        print(searcher)
+#    elif command.startswith("add "):
+#        video = searcher.get_video(int(command.split(' ')[1]))
+#        player.add_video(video)
+#    elif command.startswith("play"):
+#        if len(command.split(' ')) == 2 and command.split(' ')[1].isnumeric():
+#            player.play(int(command.split(' ')[1])) # play specific song
+#        else:
+#            player.play() # play next song
+#    elif command.startswith("skip"):
+#        
+#    elif command == "list":
+#        print(player)
+#    elif command == "addall":
+#        for video in searcher.get_all_videos():
+#            player.add_video(video)
+#        print('all video\'s added to playlist')
+#    else:
+#        print('Unkown command')
+#    command = input("> ")
 
 player.disconnect()
