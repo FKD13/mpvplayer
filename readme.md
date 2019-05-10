@@ -2,7 +2,7 @@
 
 ## requirements
 
- - oviously **Python 3**
+ - obviously **Python 3**
  - [python-mpv](https://github.com/jaseg/python-mpv)
  - [pafy](https://pypi.org/project/pafy/)
 
