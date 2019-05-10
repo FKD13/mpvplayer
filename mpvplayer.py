@@ -39,6 +39,7 @@ class Player:
     def __str__(self):
         string = ""
         for i, video in enumerate(self.playlist):
+            string += f"\n{i} "
             if self.index - 1 == i:
                 string += f"\n--> {i}: {video['title']}"
             else:
@@ -57,7 +58,7 @@ class Searcher:
             string += f"\n{i} -> {result['title']}"
         return string + "\n"
 
-    def search(self, args: str):
+    def search(self, args: [str]):
         # remove previous search results
         self.results = []
         # do new search
@@ -77,6 +78,16 @@ class Searcher:
     def get_all_videos(self):
         return self.results
 
+def display_help():
+    print("")
+    print("find|search <search item>: returns a list of youtube's matching the search term")
+    print("add <search item id>: add the video with selected id to playlist.")
+    print("addall: add all search items to the playlist.")
+    print("skip|play: play the next song in the playlist.")
+    print("list: returns the playlist.")
+    print("quit: close the program and video.")
+    print("help: print this help")
+    print("")
 
 class CommandManager:
 
@@ -86,7 +97,9 @@ class CommandManager:
                 "skip": None,
                 "list": self.list_cmd,
                 "find": self.find_cmd,
+                "search": self.find_cmd,
                 "addall": None,
+                "help": self.help_cmd,
                 "add": self.add_cmd}
         self.player = player
         self.searcher = searcher
@@ -114,7 +127,7 @@ commandManager = CommandManager(player, searcher)
 
 # main loop
 command = input("> ")
-while command != "quit":
+while command != "quit" and command != "exit":
     command = command.split(' ')
     basename = command[0]
     if len(command) >= 2:
