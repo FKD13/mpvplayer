@@ -35,10 +35,12 @@ class Player:
     def __str__(self):
         string = ""
         for i, video in enumerate(self.playlist):
+            string += f"\n{i} "
             if self.index - 1 == i:
-                string += "\n--> " + video['title']
+                string += "---> " 
             else:
-                string += "\n" + video['title']
+                string += "-> " 
+            string += video['title']
         return string
 
 
@@ -53,7 +55,7 @@ class Searcher:
             string += f"\n{i} -> {result['title']}"
         return string + "\n"
 
-    def search(self, args: str):
+    def search(self, args: [str]):
         # remove previous search results
         self.results = []
         # do new search
@@ -73,20 +75,32 @@ class Searcher:
     def get_all_videos(self):
         return self.results
 
+def display_help():
+    print("")
+    print("find|search <search item>: returns a list of youtube's matching the search term")
+    print("add <search item id>: add the video with selected id to playlist.")
+    print("addall: add all search items to the playlist.")
+    print("skip|play: play the next song in the playlist.")
+    print("list: returns the playlist.")
+    print("quit: close the program and video.")
+    print("help: print this help")
+    print("")
 
 player = Player()
 searcher = Searcher()
 
 # main loop
 command = input("> ")
-while command != "quit":
-    if command.startswith("find "):
+while command != "quit" and command != "exit":
+    if command.startswith("find ") or command.startswith("search "):
         command = command.split(" ")[1:]
         searcher.search(command)
         print(searcher)
-    elif command.startswith("add "):
-        video = searcher.get_video(int(command.split(' ')[1]))
-        player.add_video(video)
+    elif command.startswith("add "):  
+        indexstr = command.split(' ')[1]
+        if indexstr.isdigit():
+            video = searcher.get_video(int(indexstr))
+            player.add_video(video)
     elif command == "play" or command == "skip":
         player.play()
     elif command == "list":
@@ -95,6 +109,8 @@ while command != "quit":
         for video in searcher.get_all_videos():
             player.add_video(video)
         print('all video\'s added to playlist')
+    elif command.startswith("help"):
+        display_help()
     else:
         print('Unkown command')
     command = input("> ")
