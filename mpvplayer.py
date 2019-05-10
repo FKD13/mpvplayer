@@ -31,15 +31,23 @@ class Player:
         else:
             print('playlist at end - add songs')
 
+    def skip(self, amounth: int):
+        if 0 <= self.index + amounth - 1 < len(self.playlist):
+            self.index += amounth - 1
+            self.play()
+        else:
+            print(f'Could not skip {amounth} songs, song {self.index + amounth} does not exist')
+
     def disconnect(self):
-        self.player.terminate()read xml python
+        self.player.terminate()
 
     def goto(self, index: int):
+        pass
 
     def __str__(self):
         string = ""
         for i, video in enumerate(self.playlist):
-            string += f"\n{i} "
+            # string += f"\n{i} "
             if self.index - 1 == i:
                 string += f"\n--> {i}: {video['title']}"
             else:
@@ -78,27 +86,17 @@ class Searcher:
     def get_all_videos(self):
         return self.results
 
-def display_help():
-    print("")
-    print("find|search <search item>: returns a list of youtube's matching the search term")
-    print("add <search item id>: add the video with selected id to playlist.")
-    print("addall: add all search items to the playlist.")
-    print("skip|play: play the next song in the playlist.")
-    print("list: returns the playlist.")
-    print("quit: close the program and video.")
-    print("help: print this help")
-    print("")
 
 class CommandManager:
 
     def __init__(self, player: Player, searcher: Searcher):
         self.map = {
                 "play": self.play_cmd,
-                "skip": None,
+                "skip": self.skip_cmd,
                 "list": self.list_cmd,
                 "find": self.find_cmd,
                 "search": self.find_cmd,
-                "addall": None,
+                "addall": self.addall_cmd,
                 "help": self.help_cmd,
                 "add": self.add_cmd}
         self.player = player
@@ -111,15 +109,46 @@ class CommandManager:
             print('command not defined')
 
     def play_cmd(self, args: list):
-        pass
+        if len(args) == 1:
+            self.player.play(int(args[0]))
+        elif len(args) == 0:
+            self.player.play()
+        else:
+            print('Too many args: usage: play [nr]')
+
+    def skip_cmd(self, args: list):
+        if len(args) == 1:
+            self.player.skip(int(args[0]))
+        elif len(args) == 0:
+            self.player.play()
+        else:
+            print('Too many args: usage: skip [nr]')
 
     def add_cmd(self, args: list):
-        pass
+        self.player.add_video(searcher.get_video(int(args[0])))
+
+    def addall_cmd(self, args: list):
+        for video in self.searcher.get_all_videos():
+            self.player.add_video(video)
 
     def find_cmd(self, args: list):
-        pass
+        self.searcher.search(args)
+        print(searcher)
 
     def list_cmd(self, args: list):
+        print(self.player)
+
+    def help_cmd(self, args: list):
+        print("")
+        print("find|search <search item>: returns a list of youtube's matching the search term")
+        print("add <search item id>: add the video with selected id to playlist.")
+        print("addall: add all search items to the playlist.")
+        print("skip|play: play the next song in the playlist.")
+        print("list: returns the playlist.")
+        print("quit: close the program and video.")
+        print("help: print this help")
+        print("")
+	
 
 player = Player()
 searcher = Searcher()
@@ -132,33 +161,9 @@ while command != "quit" and command != "exit":
     basename = command[0]
     if len(command) >= 2:
         args = command[1:]
-    else
+    else:
         args = None
     commandManager.execute_command(basename, args)
     command = input("> ")
-
-#    if command.startswith("find "):
-#        command = command.split(" ")[1:]
-#        searcher.search(command)
-#        print(searcher)
-#    elif command.startswith("add "):
-#        video = searcher.get_video(int(command.split(' ')[1]))
-#        player.add_video(video)
-#    elif command.startswith("play"):
-#        if len(command.split(' ')) == 2 and command.split(' ')[1].isnumeric():
-#            player.play(int(command.split(' ')[1])) # play specific song
-#        else:
-#            player.play() # play next song
-#    elif command.startswith("skip"):
-#        
-#    elif command == "list":
-#        print(player)
-#    elif command == "addall":
-#        for video in searcher.get_all_videos():
-#            player.add_video(video)
-#        print('all video\'s added to playlist')
-#    else:
-#        print('Unkown command')
-#    command = input("> ")
 
 player.disconnect()
