@@ -13,9 +13,10 @@ class Player:
         self.current_vid = None
         self.playlist = []
         self.index = 0
+        self.playing = False
 
     def time_update(self, name, new_value):
-        if self.current_vid is not None and new_value is not None and self.current_vid.length <= new_value + 1: # 1 is for security, for some video's this is required
+        if self.playing and self.current_vid is not None and new_value is not None and self.current_vid.length <= new_value + 1: # 1 is for security, for some video's this is required
             self.play()
 
     def add_video(self, video: dict):
@@ -28,8 +29,10 @@ class Player:
             self.current_vid = pafy.new(self.playlist[self.index]['url'])
             self.player.play(self.playlist[self.index]['url'])
             self.index += 1
+            self.playing = True
         else:
             print('playlist at end - add songs')
+            self.playing = False
 
     def skip(self, amounth: int):
         if 0 <= self.index + amounth - 1 < len(self.playlist):
