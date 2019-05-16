@@ -122,18 +122,18 @@ class CommandManager:
     def play_cmd(self, args: list):
         if args is None:
             self.player.play()
-        elif len(args) == 1:
+        elif len(args) == 1 and args[0].isdigit():
             self.player.play(int(args[0]))
         else:
-            print('Too many args: usage: play [nr]')
+            print('Usage: play [nr]')
 
     def skip_cmd(self, args: list):
         if args is None:
             self.player.play()
-        elif len(args) == 1:
+        elif len(args) == 1 and args[0].isdigit():
             self.player.skip(int(args[0]))
         else:
-            print('Too many args: usage: skip [nr]')
+            print('Usage: skip [nr]')
 
     def add_cmd(self, args: list):
         if args[0].isdigit():
@@ -146,8 +146,11 @@ class CommandManager:
             self.player.add_video(video)
 
     def find_cmd(self, args: list):
-        self.searcher.search(args)
-        print(searcher)
+        if args is not None:
+            self.searcher.search(args)
+            print(searcher)
+        else:
+            print("Usage: find|search <search_line>")
 
     def clear_cmd(self, args: list):
         self.player.playlist = []
