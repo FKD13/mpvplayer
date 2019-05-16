@@ -153,21 +153,24 @@ class CommandManager:
         print(self.player)
 
     def save_cmd(self, args: list):
-        if not self.playListManager.add_playlist(args[0], player.playlist):
-            print('something went wrong')
+        if args is not None and len(args) == 1:
+            if not self.playListManager.add_playlist(args[0], player.playlist):
+                print('something went wrong')
+        else:
+            print('Usage: save <name_playlist>')
 
     def delete_cmd(self, args: list):
         if args is not None and len(args) == 1:
             playListManager.remove_playlist(args[0])
         else:
-            print('Too many args: usage: delete <name_playlist>')
+            print('Usage: delete <name_playlist>')
 
     def load_cmd(self, args: list):
         if args is not None and len(args) == 1:
             player.playlist = playListManager.get_playlist(args[0])
             player.index = 0
         else:
-            print('Too many args: usage: load <name_playlist>')
+            print('Usage: load <name_playlist>')
 
     def show_playlist_cmd(self, args: list):
         if args is None:
@@ -182,12 +185,18 @@ class CommandManager:
     def help_cmd(self, args: list):
         print("")
         print("find|search <search item>: returns a list of youtube's matching the search term")
-        print("add <search item id>: add the video with selected id to playlist.")
-        print("addall: add all search items to the playlist.")
-        print("skip|play: play the next song in the playlist.")
-        print("list: returns the playlist.")
+        print("add <search item id>: add the video with selected id to queue.")
+        print("addall: add all search items to the queue.")
+        print("skip|play: play the next song in the queue.")
+        print("list: returns the queue.")
+        print("clear: empties the queue.")
         print("quit: close the program and video.")
         print("help: print this help")
+        print("playlist commands:")
+        print("\tsave <name_playlist>: save the currently playing playlist as a playlist.")
+        print("\tload <name_playlist>: load a playlist as the current playlist.")
+        print("\tdelete <name_playlist>: delete a playlist.")
+        print("\tshowplaylist [name_playlist]: show all playlist names or display song in selected playlist")
         print("")
 
 
