@@ -10,8 +10,11 @@ class PlaylistManager:
         self.load()
 
     def load(self):
-        with open(self.path, 'r') as f:
-            self.playlists = json.load(f)
+        try:
+            with open(self.path, 'r') as f:
+                self.playlists = json.load(f)
+        except FileNotFoundError:
+            print("No existing playlist file, will be made when saving first playlist")
 
     def save(self):
         with open(self.path, 'w') as f:
