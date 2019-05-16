@@ -143,8 +143,11 @@ class CommandManager:
             self.player.add_video(video)
 
     def find_cmd(self, args: list):
-        self.searcher.search(args)
-        print(searcher)
+        if args is not None:
+            self.searcher.search(args)
+            print(searcher)
+        else:
+            print("Usage: find|search <search_line>")
 
     def clear_cmd(self, args: list):
         self.player.playlist = []
