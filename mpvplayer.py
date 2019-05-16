@@ -136,7 +136,10 @@ class CommandManager:
             print('Too many args: usage: skip [nr]')
 
     def add_cmd(self, args: list):
-        self.player.add_video(searcher.get_video(int(args[0])))
+        if args[0].isdigit():
+            self.player.add_video(searcher.get_video(int(args[0])))
+        else:
+            print('Index is not a number')
 
     def addall_cmd(self, args: list):
         for video in self.searcher.get_all_videos():
