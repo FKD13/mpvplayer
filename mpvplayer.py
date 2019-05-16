@@ -4,6 +4,8 @@ import mpv
 from urllib import request
 from pafy import pafy
 
+from playListManager import *
+
 
 class Player:
 
@@ -92,7 +94,7 @@ class Searcher:
 
 class CommandManager:
 
-    def __init__(self, player: Player, searcher: Searcher):
+    def __init__(self, player: Player, searcher: Searcher, playListManager: PlaylistManager):
         self.map = {
                 "play": self.play_cmd,
                 "skip": self.skip_cmd,
@@ -101,12 +103,18 @@ class CommandManager:
                 "search": self.find_cmd,
                 "addall": self.addall_cmd,
                 "help": self.help_cmd,
-                "add": self.add_cmd}
+                "add": self.add_cmd,
+                "save": self.save_cmd,
+                "showplaylist": self.show_playlist_cmd,
+                "clear": self.clear_cmd,
+                "load": self.load_cmd,
+                "delete": self.delete_cmd}
         self.player = player
         self.searcher = searcher
+        self.playListManager = playListManager
 
     def execute_command(self, basename: str, args: list):
-        if self.map[basename] is not None:
+        if basename in self.map:
             self.map[basename](args)
         else:
             print('command not defined')
@@ -138,8 +146,38 @@ class CommandManager:
         self.searcher.search(args)
         print(searcher)
 
+    def clear_cmd(self, args: list):
+        self.player.playlist = []
+
     def list_cmd(self, args: list):
         print(self.player)
+
+    def save_cmd(self, args: list):
+        if not self.playListManager.add_playlist(args[0], player.playlist):
+            print('something went wrong')
+
+    def delete_cmd(self, args: list):
+        if args is not None and len(args) == 1:
+            playListManager.remove_playlist(args[0])
+        else:
+            print('Too many args: usage: delete <name_playlist>')
+
+    def load_cmd(self, args: list):
+        if args is not None and len(args) == 1:
+            player.playlist = playListManager.get_playlist(args[0])
+            player.index = 0
+        else:
+            print('Too many args: usage: load <name_playlist>')
+
+    def show_playlist_cmd(self, args: list):
+        if args is None:
+            for line in playListManager.get_all_playlist():
+                print(line)
+        elif len(args) == 1:
+            for movie in playListManager.get_playlist(args[0]):
+                print(movie['title'])
+        else:
+            print('Too Many args: Usage: > showplaylist [name]')
 
     def help_cmd(self, args: list):
         print("")
@@ -151,11 +189,12 @@ class CommandManager:
         print("quit: close the program and video.")
         print("help: print this help")
         print("")
-	
+
 
 player = Player()
 searcher = Searcher()
-commandManager = CommandManager(player, searcher)
+playListManager = PlaylistManager()
+commandManager = CommandManager(player, searcher, playListManager)
 
 # main loop
 command = input("> ")
