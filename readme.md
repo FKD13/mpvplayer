@@ -3,6 +3,8 @@
 ## requirements
 
  - obviously **Python 3**
+ - [mpv](https://mpv.io/)
+ - [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html)
  - [python-mpv](https://github.com/jaseg/python-mpv)
  - [pafy](https://pypi.org/project/pafy/)
 
