@@ -137,7 +137,13 @@ class CommandManager:
 
     def add_cmd(self, args: list):
         if args[0].isdigit():
-            self.player.add_video(searcher.get_video(int(args[0])))
+            video = searcher.get_video(int(args[0]))
+            if video is not None:
+                self.player.add_video(video)
+
+            else:
+                print(f'No video with index {args[0]}')
+
         else:
             print('Index is not a number')
 
