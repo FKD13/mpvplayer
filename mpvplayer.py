@@ -108,7 +108,8 @@ class CommandManager:
                 "showplaylist": self.show_playlist_cmd,
                 "clear": self.clear_cmd,
                 "load": self.load_cmd,
-                "delete": self.delete_cmd}
+                "delete": self.delete_cmd,
+                "stop": self.stop_cmd}
         self.player = player
         self.searcher = searcher
         self.playListManager = playListManager
@@ -183,6 +184,10 @@ class CommandManager:
             player.index = 0
         else:
             print('Usage: load <name_playlist>')
+
+    def stop_cmd(self, args: list):
+        pass
+        # self.player.disconnect()
 
     def show_playlist_cmd(self, args: list):
         if args is None:
